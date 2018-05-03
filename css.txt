@@ -1,0 +1,349 @@
+Margin Collapsing 
+
+If you have two elements next to each other, the margin between them are collapsed to one margin. The bigger margin wins. This makes sure that you don't get big distances between the elements.
+
+It is a good practice to use margin-top or margin-bottom because of margin collapsing.
+
+---
+
+Shorthand Syntax
+
+margin: [top] [right] [bottom] [left] -- TRBL
+padding: [top-bottom] [left-right];
+
+---
+
+Block-level elements
+
+BLE always take all the available width by default.
+
+I.e. li elements are block-level
+
+---
+
+Box-sizing: border-box
+
+By default, if you set the height and width of a block-level element, padding, border and margin is not included. This is because of the box-sizing: content-box; setting.
+
+If set box-sizing to border-box, width and height include padding and border values.
+
+We use the universal selector * to overwrite inheritance and browser defaults to make sure all elements include padding and border in its calculation.
+
+---
+
+outline
+
+Appears whenever an element has focus (i.e. a button). It is not part of the box model. It is between the border and the margin. It is like a lighter version of border.
+
+We can remove this with:
+
+button:focus {
+  outline: none;
+}
+
+---
+
+Inline elements
+
+I.e. anchor tags. They don't take the entire width. 
+
+---
+
+BEM Syntax
+
+header element - .main-header
+nav element - .main-nav
+ul inside nav - .main-nav__items
+li inside that ul - .main-nav__item (for each li)
+
+---
+
+inline-block
+
+Still behave like inline elements (you can set them next to each other), but behave like block-level elements when setting margins, padding (which aren't possible with inline elements)
+
+Note: watch out for inline-block because whitespace in your editor can be read as an additional character
+
+---
+
+Combinators 
+
+> - direct child
+  - descendant
+
+--- 
+
+vertical-align
+
+What if you have text on a navbar (on each side) and there are two different font-sizes so that their bottom line aligns, but you want their center line to align instead?
+
+Set both (the two) elements that contain the text to vertical-align: middle;
+
+---
+
+Useful Chrome Tools
+
+- element.style is the same as setting an inline style (i.e. "style=..." directly on element)
+
+= can drill into shorthand properties to see the individual properties being set 
+(i.e. border, margin)
+
+- can see the properties that are set by default by the browser; look at the areas in darker grey with the label 'user agent stylesheet'
+
+--- 
+
+calc()
+
+Useful for when you want an element to take up a given row (i.e. navbar), but there is one element that takes up, say, 50px (you can measure width using Dev Tools)
+
+/* example code */
+
+.main-nav {
+  display: inline-block;
+  width: calc(100% - 55px);
+}
+
+---
+
+Pseudo-classes
+
+I.e. :hover, :active, :focus
+
+Define a style for a special state of an element
+
+---
+
+Pseudo-elements
+
+I.e. ::after, ::before, ::first-letter
+
+Define a style (allow you to select) for a special part of an element
+
+---
+
+Grouping style rules
+
+a:active {
+  color: white;
+}
+
+a:hover {
+  color: white;
+}
+
+-->
+
+a:active, a:hover {
+  color: white;
+}
+
+---
+
+!important
+
+Overrides specificity
+It makes your CSS code harder to understand because it can override styles that should be applied
+
+---
+
+:not()
+
+Allows us to reverse a certain rule:
+
+Sometimes useful for a tags:
+
+/* all anchor tags which don't have the active class */
+
+a:not(.active) {
+  color: blue;
+}
+
+/* or instead */
+
+a.active {
+  color: purple;
+}
+a {
+  color: blue;
+}
+
+--- 
+
+Browser Support
+
+MDN 
+caniuse.com
+
+---
+
+margin: 0 auto;
+
+Centers block level elements; can also use just margin: auto;
+
+--- 
+
+float
+
+You overwrite the default positioning and you tell the browser to push a BLE to the left or right of the page
+
+floats are great for positioning text around images. But it's not great for BLE, because text responds to the float assignment but not everything else.
+
+Usually you have to create a div after the BLE you want to float with a class of .clearfix:
+
+.clearfix {
+  clear: both;
+}
+
+floats often introduce a host of problems that we can avoid using newer CSS features
+
+---
+
+position: static;
+
+What BLE are set to by default.
+
+You cannot use top, bottom, left, right properties with it (i.e. setting top: 100px; won't do anything).
+
+---
+
+position: fixed;
+
+The positioning context of elements with a position: fixed; is the viewport
+
+Removes element from document flow. For other elements in the document, all elements set to position: fixed; don't exist, and they can flow behind them.
+
+When you set a BLE to position: fixed; it shrinks down in width, and behaves like an inline element.
+
+When we set top or left properties, it is relative to the viewport.
+
+---
+
+z-index: auto;
+
+The default value of the z-index of all elements. It is the same as z-index: 0;
+
+---
+
+z-index
+
+Setting the z-index doesn't have any impact on elements that don't have a position property different than static (the default)
+
+---
+
+position: absolute;
+
+The positioning context of an element with a position: absolute is the nearest parent that has a non-default position value.
+
+It is similar to position: fixed in that it removes elements from the document flow but they don't have a fixed position.
+
+---
+
+position: relative;
+
+The positioning context is the element itself.
+
+We can push a position: relative element to the top by 50px with top: 50px; and to the left by 50px with left: 50px;
+
+Element stays in document flow
+
+---
+
+overflow: hidden;
+
+Will hide child elements that go outside of the bounds of parent element
+
+When you set overflow: hidden; on the body element, it is transferred to the html element. If you want the body to have such a property, you need to set overflow: hidden; on both the body and html elements
+
+---
+
+position: sticky;
+
+Combination of position: relative and position: fixed; 
+
+The element is position: relative; and when we reach a certain limit, it becomes position: sticky;
+
+We can specify a distance between our element and the viewport (i.e. top: 10px;)
+
+It stops behaving as a position: fixed; element once you reach the end of the element's parent
+
+---
+
+Stacking context
+
+There are two elements on the same level. One has children. Those children cannot sit above the other parent element without their parent first having a higher z-index. 
+
+---
+
+background-size
+
+Takes percent value (i.e. 100%) or keywords
+
+background-size: cover; (ensures that your image will always cover the entire container; no whitespace)
+
+background-size: contain; (image doesn't fill the entire container, ensures that the entire image is seen)
+
+---
+
+background-position
+
+Takes values (percentages or pixels) or keywords
+
+It sets the initial position of the background, relative to the background position layer
+
+initial value is background-position: center center; (or 50% 50%)
+
+Can combine keywords and values:
+
+background-position: left 10% bottom 20%;
+
+---
+
+background-origin
+
+We define what the container is for our background property
+
+The initial value is background-origin: padding-box;
+
+It is like box-sizing, we can set background-origin: border-box;
+
+---
+
+background-clip
+
+Allows us to set where we clip the background image
+
+I.e. background-clip: content-box; clips the image before the padding, which creates some whitespace around the background
+
+---
+
+background shorthand
+
+background: [image] [position] / [size] [repeat] [origin] [clip];
+
+If you only include one value after -repeat, it will serve as the value both for bg-origin and bg-clip
+
+-- 
+
+Linear Gradients
+
+Set with background-image: linear-gradient();
+
+Accepts degrees (i.e. 30deg) or keywords (i.e. to left bottom)
+
+Can transition to transparent (i.e. linear-gradient(to right, red, transparent);)
+
+Can define stops: linear-gradient(to right, red 70%, blue 90%, transparent) 
+
+---
+
+Radial Gradients
+
+background-image: radial-gradient();
+
+It defaults to an ellipse, but we can make it a circle:
+
+background-image: radial-gradient(circle 50px at 20% 50%, red, blue, green);
+
+Or change the ellipse size:
+
+background-image: radial-gradient(ellipse 50px 80px at 20% 50%, red, blue, green);
