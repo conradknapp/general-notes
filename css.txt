@@ -347,3 +347,74 @@ background-image: radial-gradient(circle 50px at 20% 50%, red, blue, green);
 Or change the ellipse size:
 
 background-image: radial-gradient(ellipse 50px 80px at 20% 50%, red, blue, green);
+
+Or change the ellipse size:
+
+background-image: radial-gradient(ellipse 50px 80px at 20% 50%, red, blue, green);
+
+---
+
+filters
+
+Allow us to change the appearance of an element via blur, grayscale, opacity, contrast, etc;
+
+img {
+  filter: blur(5px);
+}
+
+Generally accepts percentages and pixels
+
+---
+
+Styling SVGs
+
+Use Dev Tools to select different paths within the SVG
+
+fill ~ background-color
+stroke ~ border-color
+stroke-width ~ border-width
+
+---
+
+What's the problem with using absolute units for CSS?
+
+When you use pixels for your font-size, you don't give your user any control over the size of things. If they increase it in their preferences, text with a font-size using pixels will not change in size
+
+---
+
+Viewport Lengths
+
+Adjust the size of elements according to the viewport--vh, vw, vmin, vmax
+
+---
+
+Font-relative Lengths
+
+rem - root em
+em
+
+---
+
+Manipulating CSS with JS
+
+Two alternate syntaxes
+
+myElement.style.backgroundSize = '100%';
+
+myElement.style['background-size'] = '100%';
+
+---
+
+Viewport Meta-tag
+
+<meta name="viewport" content="width=device-width", initial-scale="1.0">
+
+It is needed to adjust a given website to the device viewport it is being loaded on
+
+It allows the page to recognize the device the site is running on so it can adjust the hardware pixels to CSS pixels. Otherwise, the site will not be responsive; the desktop version of the page will just be shrunk
+
+---
+
+media queries
+
+Allow you to specify a basic condition (an if condition) and once this condition is true, you can change one or multiple values of properties of selectors of your choice 

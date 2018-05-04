@@ -1,0 +1,144 @@
+What is Redux?
+
+"Redux is a predictable state container for JS apps"
+
+Redux does not provider reducer functions; it does not provide any predefined state objects. 
+
+Redux takes care of the process of handling the actions (as created by user events), calling the reducer functions, returning back a new state and notifying those things that have subscribed to the new state
+
+---
+
+What does predictable state container mean?
+
+predictable -- state is updated using pure functions (i.e. same input will yield same output)
+
+state -- the application's data, including data related to the UI itself
+
+container -- Redux is the container which applies actions to the pure reducer functions to return a new state
+
+---
+
+Why Redux? What problems does Redux solve?
+
+- Managing state in JS is very challenging
+- Redux helps to manage state changes in our application
+- It gives us a predictable state container; it simplifies state management
+
+---
+
+How is the concept of actions different in Redux?
+
+- Each action reduces the state to a new predictable state. In other words, when a user performs an action with a given state, when that action is run through a Redux reducer function, it will produce a new state that we can predict. If we run it again, we will get another new predictable state. 
+
+If you have the same state and the same action, it will yield the same result. This is a consequence of Redux's implementation of pure functions.
+
+---
+
+What is a store/state container?
+
+It contains two things:
+
+1) Reduction Logic; which is implemented with pure functions
+2) The last reduced (current) state; whatever the last state was after the last action came through is available through the Redux store
+
+---
+
+What are the three principles of Redux?
+
+1) Single source of truth; there is one application state. All aspects of the UI that need to be updated come from this state managed by Redux
+
+All actions that occur in the system flow through the Redux store. 
+
+All data flows through in a unidirectional manner--the components will always get their data from the Redux store and the Redux store will always get its changes from the actions and actions will always come from components directly or generated from some asynchronous mechanism
+
+When it comes to the application state, it exists in Redux (except maybe form data, whose state might exist solely within the given component)
+
+2) State is read-only; we will use immutable programming
+
+State should never be mutated --> it must always be updated in an immutable manner. The object doesn't have to be a deep clone every time there is a change, it just means that what is being changed must be new, it can't mutate what is already there
+
+We have to use immutable programming techniques to do this.
+
+3) Changes are only made with pure functions
+
+Pure functions accept inputs and produce a predictable output (i.e. with the same inputs, will always generate the same output)
+
+The function produces no side effects.
+
+These pure functions are generally composed together
+
+---
+
+What are the JavaScript concepts that are useful in Redux?
+
+Object.assign - used to copy properties from one object to another
+
+Immutable Array Functions - used to produce a new array instead of mutating the existing one
+
+I.e. using .concat() over .push()
+
+Function Parameter Default Values - used to give our state an initial value
+
+Arrow Functions - used for lexical this or more concise syntax
+
+Destructuring, Spread and Rest Operators - make working with object properties easier
+
+---
+
+What are reducer functions?
+
+As each action comes into the store, that action will be reduced to single value.
+
+All of the asynchronous operations should be the actions and should not be what the reducer does. Since the reducer is a pure function it shouldn't have any side effects.
+
+The idea of a reducer function is to have one value and a previous value which are combined to return a result.
+
+The reducer functions that Redux uses are very similar to the .reduce() method that we already known using JS arrays:
+
+However, instead of calling the values in the reduce method 'prev' and 'curr' or 'acc' and 'curr', we just call them 'state' and 'action';
+
+For example, when summing over an array:
+
+array.reduce((prev, curr) => prev + curr);
+
+const finalState = actions.reduce((state, action) => state + action);
+
+Here is the action is modifying the state.
+
+---
+
+What is a basic example of a reducer function in Redux?
+
+const actions = [
+  { type: 'add', value: 1 },
+  { type: 'subtract', value: 2 },
+  { type: 'multiply', value: 3 },
+  { type: 'divide', value: 4 },
+];
+
+const finalState = actions.reduce((state, action) => {
+
+  console.log('state', state, 'action', action);
+
+  switch(action.type) {
+    case 'add':
+      return state + action.value;
+    case 'subtract':
+      return state - action.value;
+    case 'multiply':
+      return state * action.value;
+    case 'divide':
+      return state / action.value;
+    default:
+      return state;
+  }
+
+}, 0);
+
+finalState;
+
+// state 0 action {type: "add", value: 1}
+// state 1 action {type: "subtract", value: 2}
+// state -1 action {type: "multiply", value: 3}
+// state -3 action {type: "divide", value: 4}
+// -0.75

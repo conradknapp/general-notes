@@ -1,0 +1,61 @@
+How do you do array destructuring?
+
+var people = ["Conrad", "Brad", "Steve"];
+
+var [ me, you, unknown ] = people;
+
+me; // "Conrad"
+
+you; // "Brad"
+
+unknown; // "Steve"
+
+---
+
+How do you use the rest operator when you are destructuring an array?
+
+The rest operator grabs the "rest" of the elements you are destructuring and throws them into a separate array.
+
+var people = ["Conrad", "Brad", "Steve"];
+
+var [ me, ...others ] = people;
+
+me; // "Conrad"
+others; // ["Brad", "Steve"]
+
+---
+
+How do you use the rest operator with function parameters?
+
+Rest operator works well with arrow functions because arrow functions don't have the "arguments" keyword (along with the this keyword)
+
+var saveUser = (name, phone, ...addressInfo) => addressInfo;
+
+saveUser("Conrad", "555-555-5555", "Hope", "Columbus", "USA"); // ["Hope", "Columbus", "USA"]
+
+---
+
+How do you rename variables you are destructuring off of an object?
+
+var person = {
+  first: "Conrad",
+  last: "Knapp"
+};
+
+var { first: f, last: l } = person;
+
+f;
+// "Conrad"
+
+l;
+// "Knapp"
+
+---
+
+How do you use the spread operator with function calls?
+
+The spread operator will spread the array into comma separated values (which the function accepts)
+
+var returnNums = (a, b, c) => console.log(a, b, c);
+
+returnNums(...[42, 17, 3]); // 42 17 3

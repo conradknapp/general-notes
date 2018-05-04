@@ -1,0 +1,3 @@
+What is an application?
+
+An application is no more than an initial state followed by a series of actions; user actions change that initial state

@@ -1,0 +1,25 @@
+How do you use Object.assign()?
+
+Object.assign() returns a new object but keeps all of the properties of the object that it accept.
+
+var me = {
+  first: "Conrad",
+  last: "Knapp"
+};
+
+var newMe = Object.assign({}, me);
+
+newMe; // {first: "Conrad", last: "Knapp"}
+
+me === newMe; // false 
+
+/* me and notMe are not the same object */
+
+You can also specify more properties (with as many additional arguments as you want):
+
+var newerMe = Object.assign({}, me, {
+  hair: "brown",
+  age: 26
+});
+
+newerMe; // {first: "Conrad", last: "Knapp", hair: "brown", age: 26}

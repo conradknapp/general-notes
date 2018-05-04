@@ -1,0 +1,24 @@
+How do you use .concat()?
+
+.concat() returns a new array and doesn't mutate the previous array
+
+var people = ["Conrad", "Brad", "Steve"];
+
+var newPeople = people.concat("Don");
+
+people; // ["Conrad", "Brad", "Steve"]
+newPeople; //["Conrad", "Brad", "Steve", "Don"]
+
+---
+
+How do you use .slice()?
+
+.slice() removes an element(s) of a given array and return a copy (doesn't mutate the original)
+
+var people = ["Conrad", "Brad", "Steve"];
+
+var newPeople = people.slice(2);
+
+people; // ["Conrad", "Brad", "Steve"]
+
+newPeople; // ["Steve"]
