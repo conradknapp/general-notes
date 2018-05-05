@@ -1,0 +1,361 @@
+How does this work in the global execution context (outside of any function)?
+
+Outside of a function, this refers to the global object (window in browser, global in Node.js)
+
+this === window; // true
+
+It doesn't matter whether we're in strict mode; the top-level this always refers to the global object:
+
+"use strict";
+
+this === window; // true
+
+---
+
+How is the value of a function's this value determined?
+
+It is usually determined by how the function is called. Therefore, the this value may differ between function calls.
+
+For a plain function call (not in strict mode), the function sets the this value to the global object:
+
+function func () {
+  console.log(this === window);
+}
+
+func(); // true
+
+If the function declaration is in strict mode, the this value is set to undefined:
+
+"use strict";
+
+function func () {
+  console.log(this === undefined);
+}
+
+func(); // true
+
+---
+
+Why do we want the this value to be undefined in strict mode?
+
+function Person(first, last) {
+  this.first = first;
+  this.last = last;
+}
+
+var person = Person("Conrad", "Knapp");
+
+For example, if we use a function constructor and forget to use new, it will set the values passed to the constructor as variables on the global object:
+
+person; // undefined
+first; // "Conrad"
+last; // "Knapp"
+
+We don't want to pollute the global object, and so we use new Person() and use "use strict" to disable the default behavior of this within functions
+
+---
+
+What is the behavior of this when we invoke a function with new?
+
+First of all, a function invoked with the new keyword becomes a function call.
+
+1) When a function is invoked as a constructor, a brand new object is created.
+
+That new object is used as the this binding for the function call.
+
+This new object is linked to the constructor function's prototype.
+
+2) The brand new object that was created is returned automatically
+
+You can imagine an invisible "return this" at the end of the function
+
+--- 
+
+What is the behavior of this within a method of an object?
+
+The function's this value is set to the object the method is called on:
+
+var person = {
+  first: "Conrad",
+  sayHi() {
+    console.log(`Hi ${first}`);
+  }
+}
+
+person.sayHi();
+
+person is the receiver of the method call. person will still be the receiver of the method call when written this way, too:
+
+function sayHi() {
+  console.log(`Hi ${this.first}`);
+}
+
+var person = {
+  first: "Conrad"
+};
+
+person.sayHi = sayHi;
+person.sayHi(); // "Hi Conrad"
+
+With nested objects, the receiver is the immediate one before the method (i.e. the receiver here will still be person):
+
+foo.bar.person.sayHi(); 
+
+---
+
+How can a method lose its receiver?
+
+If we set a reference to the method equal to a variable and call it as a function, it loses its this binding:
+
+var person = {
+  first: "Conrad",
+  sayHi() {
+    console.log(`Hi ${this.first}`);
+  }
+};
+
+var greet = person.sayHi;
+greet(); // Hi undefined
+
+Here this will refer to the window and not to person because it is a plain function call and we're not in strict mode
+
+It can also happen when we pass a method as a callback to another function:
+
+var person = {
+  first: "Conrad",
+  sayHi() {
+    console.log(`Hi ${this.first}`);
+  }
+};
+
+setTimeout(person.sayHi, 1000); // Hi undefined
+
+setTimeout calls the method with a this argument set to the global object, which results in undefined (the normal value of this is a plain function call)
+
+We can solve this by adding a wrapper function, so it is still invoked as a method:
+
+var person = {
+  first: "Conrad",
+  sayHi() {
+    console.log(`Hi ${this.first}`);
+  }
+};
+
+setTimeout(function () {
+  person.sayHi();
+}, 1000); // Hi Conrad
+
+We can also use the bind method, which allows to tie the this keyword to a specific object:
+
+var person = {
+  first: "Conrad",
+  sayHi() {
+    console.log(`Hi ${this.first}`);
+  }
+};
+
+setTimeout(person.sayHi.bind(person), 1000); // Hi Conrad
+
+---
+
+How can we set an object as a receiver for the this value of a function dynamically (without putting it on the object)?
+
+function sayHi() {
+  console.log(`Hi ${this.first}`);
+}
+
+var person = {
+  first: "Conrad"
+};
+
+We can do this using the call method (it is available on every function):
+
+sayHi.call(person);
+
+The first argument is the this arg. 
+
+We can also use .apply():
+
+sayHi.apply(person);
+
+Most methods that we use on different types of data are merely syntactic sugar for call or apply:
+
+var nums = [1, 2, 3, 4];
+
+var res1 = nums.slice(1, 2);
+var res2 = nums.slice.call(nums, 1, 3);
+var res3 = nums.slice.apply(nums, [1, 4]);
+
+res1; // [2]
+res2; // [2, 3]
+res3; // [2, 3, 4]
+
+Note: When you use .call() or .apply() in non-strict mode and pass in undefined or null as the this arg, it refers to the global object:
+
+function func() {
+  console.log(this === window);
+}
+
+func.call(null); // true
+func.apply(undefined); // true
+
+Again, we use "use strict" to fix this behavior
+
+---
+
+What does .bind() do?
+
+When we lose the this binding of a method, we often use .bind():
+
+var person = {
+  first: "Conrad",
+  sayHi() {
+    console.log(`Hi ${this.first}`);
+  }
+};
+
+setTimeout(person.sayHi.bind(person), 1000); 
+
+.bind() will create a new "sayHi" function and will permanently set its this value to person. This is sometimes called "hard binding"
+
+Even if we extract the bound function to a variable and call it as a function, its this value will still be set to the proper receiver:
+
+var greet = person.sayHi.bind(person);
+greet(); // "Hi Conrad"
+
+Once a function this value is set with .bind() it can't be changed with .call() or .apply():
+
+var otherPerson = {
+  first: "Brad"
+}
+
+greet.call(otherPerson); // "Hi Conrad"
+
+The greet function is bound to person.
+
+---
+
+How would you create a bind function?
+
+Function.prototype.bind = function(thisArg, ...fixedArgs) {
+  var func = this;
+  return function(...args) {
+    return func.apply(thisArg, [...fixedArgs, ...args]);
+  };
+}
+
+---
+
+What is the behavior of this with arrow functions?
+
+Arrow functions don't have their own this, instead it uses the this from its enclosing execution context:
+
+var outerThis = this;
+
+var func = () => {
+  console.log(this === outerThis);
+}
+
+func(); // true
+
+The this binding of an arrow function can't be set explicitly; if we try to set the this value of an arrow function with .call(), .apply(), or .bind(), it will be ignored
+
+It doesn't matter how we call an arrow function; it's this value will always refer to the this value that was captured when the arrow function was created
+
+We also can't use an arrow function as a constructor for that reason.
+
+---
+
+What is the lexical this of arrow functions useful for?
+
+When we want to access this within a callback:
+
+var counter = {
+  count: 0,
+  increment() {
+    setInterval(function() {
+      console.log(++this.count);
+    }, 1000)
+  }
+}
+
+counter.increment(); // NaN
+
+If we run this, we see it doesn't work. The this binding doesn't refer to the counter object, it refers to the global object. So the function is trying to increment the count property of the global object (which doesn't exist).
+
+But changing the inner function to an arrow function:
+
+var counter = {
+  count: 0,
+  increment() {
+    setInterval(() => {
+      console.log(++this.count);
+    }, 1000)
+  }
+}
+
+counter.increment(); // 1
+
+Our callback uses the this binding from the increment method and so the this value within setInterval correctly refers to the counter object.
+
+--- 
+
+What is the behavior of this within classes?
+
+class Person {
+  constructor(first) {
+    this.first = first;
+  }
+
+  sayHi() {
+    console.log(`Hi ${this.first}`);
+  }
+}
+
+var person = new Person("Conrad");
+person.sayHi(); // Hi Conrad
+
+When we call sayHi as a method on person (which is an instance of the Person class), person is the receiver and the this binding is correct
+
+We once again lose the receiver of the method if we assign a reference of that function to a variable and then call it:
+
+var greet = person.sayHi;
+greet(); // Uncaught TypeError: Cannot read property 'first' of undefined
+
+The this argument within sayHi is now set to undefined; this is because class bodies are implicitly within strict mode and we are invoking greet as an ordinary function and not a method:
+
+We could use the .bind() method in this case:
+
+var greet = person.sayHi.bind(person);
+greet(); // Hi Conrad
+
+We could also bind the sayHi method within the constructor of the class:
+
+class Person {
+  constructor(first) {
+    this.first = first;
+
+    this.sayHi = this.sayHi.bind(this);
+  }
+
+  sayHi() {
+    console.log(`Hi ${this.first}`);
+  }
+}
+
+Another option is to use a class field and an arrow function, which allows us to remove the .bind assignment within the constructor:
+
+class Person {
+  constructor(first) {
+    this.first = first;
+  }
+
+  sayHi = () => {
+    console.log(`Hi ${this.first}`);
+  }
+}
+
+var person = new Person("Conrad");
+
+var greet = person.sayHi();
+greet(); // "Hi Conrad"
