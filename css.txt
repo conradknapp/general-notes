@@ -418,3 +418,97 @@ It allows the page to recognize the device the site is running on so it can adju
 media queries
 
 Allow you to specify a basic condition (an if condition) and once this condition is true, you can change one or multiple values of properties of selectors of your choice 
+
+Everything outside the media query is the mobile code and within the media queries, you have the views for the larger devices. If that is the case, you have @media (min-width: )
+
+Otherwise, if you have your mobile code within the media queries and the rest of your code is for normal sizes, you use @media (max-width: )
+
+---
+
+Combinators with media queries
+
+I.e.
+
+@media (min-width: 40rem) and (max-width: 60rem)
+
+--- 
+
+Media queries with orientation
+
+@media (orientation: portrait)
+
+@media (orientation: landscape)
+
+They have problems though for desktop views, so it is probably best to stick with min-width and max-width
+
+---
+
+Attribute selectors 
+
+i.e. 
+
+[type] {
+  color: white;
+}
+
+More specific selector:
+
+[type="text"] {
+  border-color: blue; 
+}
+
+Element that starts with a particular selector:
+
+[lang|="en"] {
+  color: red;
+}
+
+will match: <p lang="en-us">text</p>
+
+Element with a certain prefix: 
+
+[href^="google.com"] {
+  color: green;
+}
+
+<a href="google.com/about">text</p>
+
+Element with a certain suffix:
+
+[href$=".com"] {
+  color: blue;
+}
+
+All elements that contain a certain value 
+
+[src*="cdn"] {
+  color: green;
+}
+
+---
+
+What values are applied automatically when we write display: flex;?
+
+flex-direction: row; (the main axis goes from top left to right) and flex-wrap: no-wrap;
+
+flex-direction: row-reverse (the main axis goes from top right to left)
+
+---
+
+What is justify-content and align-items?
+
+justify-content defines the position of flex elements along the main (row is flex-direction: row) axis
+
+align-items defines the position of flex elements along the cross axis (column is flex-direction: row) 
+
+---
+
+What is align-content?
+
+Allows us to align our items along the cross-axis (the default value is align-content: center;)
+
+--- 
+
+How does align-self work?
+
+Allows us to define position of a flex item along the cross axis (if flex-direction of container is row, it will be adjusted along the column--up or down)

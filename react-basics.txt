@@ -1,0 +1,57 @@
+What is React?
+
+A JS library for building user interfaces
+
+Focuses on JS code, not HTML templates, such as Handlebars. Everything is JavaScript
+
+React components are composable. You break parts of your app into components, compose them, makes them more reusable, easier to test, etc.
+
+Uses one-way reactive data flow (to component state), doesn't have two way data binding by default. 
+
+All the DOM manipulations handled by React itself (via diffing), you just manage the state. You let React handle the DOM.
+
+Represents the V in the MVC pattern. We are not talking about the underlying data models or controllers. We are dealing with keeping the component data synchronized with the DOM.
+
+---
+
+What is JSX?
+
+It's a solution for having to write React.createElement() for each DOM element you want to create.
+
+It looks like HTML but its just an alternative syntax for React.createElement function calls
+
+A transpiler is needed to convert JSX to JavaScript (namely, Babel)
+
+---
+
+What are props?
+
+Props are the means by which we pass in data to React components (from a parent component)
+
+They are values which are used to define the parameters of the component (since components are classes/functions)
+
+Props for a component can't be modified within the component
+
+--- 
+
+What is component state in React?
+
+State represents the mutable data within a React component. Props are immutable, but state is mutable.
+
+The function setState will trigger React to re-render the component using the new state values
+
+Parents component will usually managed on the parent (are sometimes called container components) and that state is passed down as props to the children components
+
+Ideally, very few components should have state, with most components only receiving props (and thus being a stateless functional component), which is updated through the parent component's state
+
+--- 
+
+How do forms and React work together?
+
+It is quite different from other libraries. 
+
+React hooks into the onChange event of the input control to re-render the DOM on each change event (each keystroke) so that the contents of the control always match the DOM. 
+
+That onChange event calls a function which updates the component state and depending upon the configuration of the component that state data may propagate down via props to the input control so that the value attribute of the input actually represents the typed in value of the input.
+
+The forms that are hooked into the onChange event are called controlled components whereas forms that don't are called uncontrolled.
