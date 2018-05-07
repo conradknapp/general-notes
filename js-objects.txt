@@ -23,3 +23,44 @@ var newerMe = Object.assign({}, me, {
 });
 
 newerMe; // {first: "Conrad", last: "Knapp", hair: "brown", age: 26}
+
+---
+
+How do you use Object.defineProperty?
+
+var person = {
+  first: "Conrad"
+};
+
+Object.defineProperty(person, "last", {
+  value: "Knapp",
+  writable: false,
+  configurable: true,
+  enumerable: true
+});
+
+person.last = "Smith"; // "Smith"
+
+person; // {first: "Conrad", last: "Knapp"}
+
+---
+
+How do you check whether an object is prototype-linked to a function?
+
+function Person() {
+
+}
+
+var person = new Person();
+
+Object.getPrototypeOf(person) === Person.prototype; // true
+
+---
+
+What does Object.seal() do?
+
+It allows us to change the existing properties of an object, but not to add properties
+
+---
+
+What does Object.freeze() do?

@@ -1,0 +1,385 @@
+What is scope?
+
+Scope - a collection of variables and the rules for how they are accessed
+
+Lexical scope rules say that code in one scope can access the variables of that scope or any outer one.
+
+Scope can be nested in another scope. A nested scope can access variables from both scopes.
+
+---
+
+What happens when you compare two non-primitive values (objects, arrays, functions)?
+
+Both == and === will check if the references match, nothing about the underlying values
+
+---
+
+What is hoisting?
+
+When a variable (declared with var) or function declaration is conceptually "moved" to the top of its enclosing scope
+
+It is a behavior of the JS engine. Here is an example:
+
+console.log(person); // undefined
+var person = "Conrad";
+
+How can we use 'person' before it has been declared and assigned a value? Hoisting.
+
+Note: "use strict"; does not modify this behavior
+
+Variables declared with let and const will not be hoisted however. They will throw a ReferenceError:
+
+console.log(person);
+let person = "Conrad";
+
+// Uncaught ReferenceError: person is not defined
+
+Note: Only the declarations themselves are hoisted, while any assignments or other executable logic are left in place.
+
+Another Note: Function declarations are hoisted, function expressions are not 
+
+We will get a TypeError if we try to invoke a function expression that was declared with var before it was defined; that's because we would be trying to call the value undefined
+
+---
+
+What are IIFEs?
+
+Immediately invoked function expressions. It is a way to execute a function expression:
+
+(function func() {
+
+}());
+
+1) It allows us to keep variables private using scope
+
+2) It allows us to avoid using a named function which would pollute the enclosing scope (usually global), which we would then have to call
+
+Note: the identifier func is not bound in the enclosing scope, but only within its own function
+
+---
+
+What is closure?
+
+Closure is a way to remember and continue to access a function's variables even after the function has finished running
+
+---
+
+What are some examples of closure?
+
+/* First Example */
+
+function makeAdder(x) {
+  // parameter "x" is an inner variable
+
+  // inner function "add" uses x so it has closure over it
+
+  function add(y) {
+    return x + y;
+  }
+
+  return add;
+}
+
+var plusOne = makeAdder(1);
+var plusTen = makeAdder(10);
+
+plusOne(3); // 4
+plusTen(3); // 13
+
+/* Second Example */
+
+function outer() {
+  var a = 2;
+
+  return function inner() {
+    console.log(a);
+  }
+}
+
+var ref = outer();
+
+ref(); // 2
+
+When we invoke 'ref', we are actually invoking the function 'inner' outside its original scope. 
+
+'inner' still has a reference to the scope of 'outer' and that reference is called closure
+
+/* Third Example */
+
+We can also transport the inner function to the scope of another function and execute it there:
+
+function outer() {
+  var a = 2; 
+
+  function inner() {
+	console.log(a);
+  } 
+
+  other(inner);
+}
+
+function other(fn) {
+  fn();
+}
+
+outer(); // 2
+
+/* Fourth Example */
+
+function wait() {
+  var greeting = "hi";
+
+  setTimeout(() => console.log(greeting), 1000);
+} 
+
+wait(); // hi
+
+The anonymous function within the setTimeout has a closure over the scope of wait, which keeps a reference to the variable greeting
+
+A second after we have executed wait(), its inner scope should be long gone, but the inner function timer still has closure over that scope
+
+---
+
+What are some common practical usages of closure?
+
+Closure gives us some common patterns such as the module pattern, which reveals a public API of the things that we want to return from a function and conceals the things we want to hide:
+
+function personAPI() {
+  var person = "Conrad";
+
+  function getPerson() {
+    console.log(person);
+  }
+
+  function upperCasePerson() {
+    console.log(person.toUpperCase());
+  }
+
+  return {
+    getPerson,
+    upperCasePerson
+  }
+}
+
+var p = personAPI();
+
+p.getPerson(); // Conrad
+
+p.upperCasePerson(); // CONRAD
+
+We have to invoke the personAPI function to create a module instance. Then we can access the things that we have explicitly returned from the function.
+
+Another example could have had us pass arguments into the personAPI function
+
+---
+
+Do IIFEs have closure?
+
+var a = 2;
+
+(function IIFE() {
+  console.log(a);
+}());
+
+This is not really a case of closure. The function named IIFE is not executed outside its lexical scope. It's invoked in the same scope as it was declared. a is found through normal lexical scope look-up, not closure.
+
+An IIFE creates scope, however.
+
+---
+
+When a non-boolean is coerced to a boolean, like in a conditional (i.e. if (0) { ... }), does it become true or false?
+
+That's where truthy / falsy comes in. The falsy values that evaluate to false in such cases are:
+
+'' 
+0, -0
+NaN
+null
+undefined
+false
+
+Everything else is truthy. Including:
+
+[ ]
+{ }
+"false"
+
+A non-boolean only falls into a truthy/falsy coercion if it's actually coerced to a boolean.
+
+---
+
+What is the difference between Reference Errors and Type Errors?
+
+ReferenceErrors involve a failure to find/do something with a variable in a given scope
+
+TypeErrors are not problems with scope, but that an illegal/impossible action was attempted
+
+---
+
+What does lexical scope mean?
+
+It's based on where the variables and blocks of scope exist at write time and is mostly set in stone by the time the lexer processes your code.
+
+It means that scope is defined by author-time decisions of where functions are declared. 
+
+So the compiler knows where and how to look up these declarations during execution (i.e. there is no guessing about scope)
+
+There are some functions that can modify lexical scope at runtime such as eval()
+
+eval prevents the compiler from performing optimizations regarding scope look-up
+
+---
+
+What happens when a function is invoked with the keyword new in front of it?
+
+With a constructor call, four things happen:
+
+1) A brand new object is created
+
+2) That newly-made object is Prototype-linked
+
+3) That newly-made object is set as this binding for the function call
+
+4) The constructor call will automatically return the newly-made object
+
+---
+
+How many different data types does JavaScript have?
+
+Seven:
+
+- null
+- undefined
+- number
+- boolean
+- string
+- object
+- symbol
+
+---
+
+What is the difference between undefined and not defined?
+
+undefined is the value that JS gives to a variable that has only been declared by not assigned a value.
+
+undeclared is when a variable has not been declared with var, let, or const
+
+---
+
+What does it mean when we say that an object is a reference value?
+
+A reference in JS points to a shared value, so if you have several different references, they are always distinct references to a single shared value, none of them are references/pointers to each other
+
+---
+
+What is the difference between primitive types and reference types in JS?
+
+Primitive types are always assigned/passed by value-copy--string, number, boolean, symbol, null, undefined
+
+Reference types (every kind of object) 
+
+Primitive types are immutable while reference types are mutable
+
+---
+
+What are natives?
+
+JS provides object wrappers around primitive values, known as natives (String, Number, Boolean, etc). These object wrappers give the values access to behaviors appropriate for each type of data (i.e. String.trim(), Array.concat())
+
+---
+
+Why should you not use the constructor call of certain data types (i.e new Object(), new Boolean(), etc.)?
+
+There are many gotchas with using constructors of data types that simply aren't worth it over using the literal syntax
+
+Aside from the Error() and Date() constructors, the only real useful case of a constructor is the RegExp() constructor, which is the only form that allows you to dynamically create a RegExp.
+
+---
+
+What is the difference between double equals (==) and triple equals (===)?
+
+With double equals (loose equality), if the types happen to be different, there will be implicit coercion on one or both of the values
+
+---
+
+How do you safely use implicit coercion?
+
+1) If either side of the comparison can have true or false values, don't ever use ==
+
+2) If either side of the comparison can have [], ==, or 0 values, seriously consider not using ==
+
+The question of == vs. === is a case of whether you should coercion for a comparison or not
+
+---
+
+What are some of the benefits of using "use strict" at the top of the JavaScript file?
+
+It allows you to place your program in a strict operating context
+
+Location:
+
+- if you place "strict mode" at the top of the file, it will place everything in strict mode
+
+Advantages:
+
+- alerts you earlier to problems in your code (by throwing errors)
+- prevents you from doing unintended things (i.e. accidentally creating global variables when forgetting new keyword or forgetting use var, let, const)
+- makes dangerous parts of the language like eval a little safer
+- prevents you from using restricted keywords (i.e. can't do var let = 1)
+- prevents you from setting the this value of certain methods (i.e. .call() and .apply() to null/undefined)
+- disallows duplicate property names or parameter values
+
+---
+
+What is NaN and how can you test against it?
+
+NaN is a value which literally stands for "not a number", but this abbreviation is misleading. This code example shows why:
+
+var result = 2 / "Conrad"; 
+result; // NaN
+
+typeof result; // "number"
+
+JS has a method called .isNaN(), but is doesn't work well:
+
+isNaN(result); // true
+isNaN("Conrad");  // true
+
+So what is the only reliable way to test if something is NaN? NaN is special in that it is never equal to another NaN value:
+
+NaN === NaN; //false
+
+So we can test to see whether a value is NaN by seeing whether itself is not equal to itself return true:
+
+result !== result;  // true
+
+---
+
+What is a promise?
+
+Promises are helpers to work with async tasks. They are an improvement over using callbacks (technically they are just an improvement on callback syntax). Nesting callbacks sometimes creates very difficult to read code. 
+
+A promise is a guarantee that data will be returned to us sometime in the future (whether it is success (resolve) or failure (reject))
+
+When that promise returns, you can operate it until its done:
+
+I.e. promise.then((data) => {
+  // if success
+}).catch((err) => {
+  // if error
+})
+
+---
+
+What are the pros and cons of using promises?
+
+Pros
+
+- Avoid callback hell which can be unreadable.
+- Makes it easy to write sequential asynchronous code that is readable with .then().
+- Makes it easy to write parallel asynchronous code with Promise.all().
+
+Cons
+
+- Slightly more complex code (debatable).
+- In older browsers where ES2015 is not supported, you need to load a polyfill in order to use it.

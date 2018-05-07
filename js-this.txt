@@ -1,3 +1,19 @@
+Why do we use the this keyword?
+
+The this keyword is useful because it gives us a nicer way to pass around an object reference. If you have a function within an object and you want to reference other properties within that object, it gets tiresome to write the name of the object every time.
+
+this is used for functions to pass context easily when dealing with objects.
+
+---
+
+What is the this keyword?
+
+this is a binding that is made when a function is called
+
+What it references is determined entirely by where that function is called
+
+---
+
 How does this work in the global execution context (outside of any function)?
 
 Outside of a function, this refers to the global object (window in browser, global in Node.js)
@@ -52,6 +68,8 @@ first; // "Conrad"
 last; // "Knapp"
 
 We don't want to pollute the global object, and so we use new Person() and use "use strict" to disable the default behavior of this within functions
+
+Also, it's almost always an error for this to be referring to the global object and accessing global properties. That's why it's made undefined so it throws an error.
 
 ---
 
@@ -131,6 +149,8 @@ var person = {
 setTimeout(person.sayHi, 1000); // Hi undefined
 
 setTimeout calls the method with a this argument set to the global object, which results in undefined (the normal value of this is a plain function call)
+
+Why is the this binding lost? Because the call-site is what matters. We are not always in control of how our functions are called, so to keep the this binding, we may have to rewrite our code a little so it is still invoked within the setTimeout
 
 We can solve this by adding a wrapper function, so it is still invoked as a method:
 
@@ -359,3 +379,23 @@ var person = new Person("Conrad");
 
 var greet = person.sayHi();
 greet(); // "Hi Conrad"
+
+---
+
+What are the four rules for determining the value of the this keyword for a given function?
+
+1) Is the function called with the new keyword? If so, this is the newly obstructed object from that function call:
+
+var person = new Person("Conrad");
+
+2) Is the function called with .call(), .apply() or .bind()? If so this is the object passed in as the this arg:
+
+sayHi.call(person); 
+
+3) Is the function called with a context object (implicit binding)? this is that context object
+
+person.sayHi();
+
+4) If a normal function call is used, it is the default binding, which means this is equal to the global object in non-strict mode or undefined in strict mode
+
+sayHi();
