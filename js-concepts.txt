@@ -60,7 +60,7 @@ Note: the identifier func is not bound in the enclosing scope, but only within i
 
 What is closure?
 
-Closure is a way to remember and continue to access a function's variables even after the function has finished running
+Closure is when a function remember's and continue to access a function's variables even after the outer function has finished running
 
 ---
 

@@ -1,0 +1,21 @@
+What is the SSL or TLS handshake?
+
+The SSL or TLS handshake enables the SSL or TLS client and server to establish the secret keys with which they communicate.
+
+The steps involved in the handshake are as follows:
+
+1) The SSL or TLS client sends a "client hello" message with the SSL version
+
+2) The SSL server responds with a "server hello"
+
+3) The server sends its digital certificate
+
+4) The client verifies the server's digital certificate
+
+5) The SSL or TLS client sends the random byte string that enables both the client and the server to compute the secret key to be used for encrypting subsequent message data
+
+6) The server sends a "finished" message
+
+7) The client sends a "finished" message
+
+8) For the duration of the SSL session, the server and the client exchange messages that are encrypted with the shared secret key
